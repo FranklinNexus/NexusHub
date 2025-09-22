@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusHub - 您的 AI 技能网关</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app-container">
+        <!-- 主页/登陆页 (对未登录用户默认显示) -->
+        <div id="landing-view" class="container view">
+            <header>
+                <h1>欢迎来到 NexusHub</h1>
+                <p>统一、简化、赋能您的AI工作流</p>
+            </header>
+            <main class="landing-main">
+                <p>NexusHub 是一个中间层服务，作为AI代理与各种异构AI技能提供者之间的统一接入层。我们负责处理流量分发、密钥管理和计费，让您专注于构建下一代AI应用。</p>
+                <button id="go-to-auth-btn" class="cta-button">开始使用</button>
+            </main>
+        </div>
+
+        <!-- 登录/注册视图 (默认隐藏) -->
+        <div id="auth-view" class="container view" style="display: none;">
+            <header>
+                <h1>NexusHub 用户中心</h1>
+                <p class="auth-header-p">登录或创建一个新账户</p>
+            </header>
+            <main id="auth-main">
+                <!-- 登录表单 -->
+                <form id="login-form">
+                    <h2>登录</h2>
+                    <div class="form-group">
+                        <label for="login-email">邮箱</label>
+                        <input type="email" id="login-email" required autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">密码</label>
+                        <input type="password" id="login-password" required autocomplete="current-password">
+                    </div>
+                    <button type="submit">登录</button>
+                    <p class="auth-switch">还没有账户？ <a href="#" id="show-register">立即注册</a></p>
+                    <p id="login-error" class="error-message"></p>
+                </form>
+
+                <!-- 注册表单 (默认隐藏) -->
+                <form id="register-form" style="display: none;">
+                    <h2>创建账户</h2>
+                    <div class="form-group">
+                        <label for="register-email">邮箱</label>
+                        <input type="email" id="register-email" required autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">密码</label>
+                        <input type="password" id="register-password" required autocomplete="new-password">
+                    </div>
+                    <button type="submit">注册</button>
+                    <p class="auth-switch">已有账户？ <a href="#" id="show-login">返回登录</a></p>
+                    <p id="register-error" class="error-message"></p>
+                </form>
+                <p class="auth-switch"><a href="#" id="back-to-landing-btn">&larr; 返回主页</a></p>
+            </main>
+        </div>
+
+        <!-- 仪表盘视图 (默认隐藏) -->
+        <div id="dashboard-view" class="container view" style="display: none;">
+            <header>
+                <h1>NexusHub 仪表盘</h1>
+                <div class="header-controls">
+                    <div class="balance-display">
+                        余额: <span id="balance-amount">N/A</span> 技能单元
+                    </div>
+                    <span id="user-email-display"></span>
+                    <button id="logout-btn">登出</button>
+                </div>
+            </header>
+            <main>
+                <!-- API 密钥管理 -->
+                <section class="dashboard-section">
+                    <h3>API 密钥管理</h3>
+                    <table id="api-key-table">
+                        <thead>
+                            <tr>
+                                <th>备注 (Note)</th>
+                                <th>创建于</th>
+                                <th>上次使用</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="api-key-body"></tbody>
+                    </table>
+                    <form id="create-api-key-form">
+                        <input type="text" id="api-key-note" placeholder="为新密钥添加备注 (例如：我的新应用)" required>
+                        <button type="submit">创建新密钥</button>
+                    </form>
+                </section>
+
+                <!-- API 调用区域 -->
+                <section class="dashboard-section">
+                    <h3>调用技能</h3>
+                    <!-- API 密钥管理提示，为第三阶段做准备 -->
+                    <p class="api-key-note">
+                        注意: 当前版本直接使用您的登录会话进行认证。
+                        <a href="#">API密钥管理</a> 将在未来版本中提供。
+                    </p>
+                    <div class="form-group">
+                        <label for="skill-select">选择技能:</label>
+                        <select id="skill-select">
+                            <!-- 选项将由JS动态填充 -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="prompt-input">输入提示词 (Prompt):</label>
+                        <textarea id="prompt-input" rows="4" placeholder="例如：请用中文写一首关于春天的五言绝句"></textarea>
+                    </div>
+                    <button id="invoke-btn">发送请求</button>
+                    <div id="loader" class="loader" style="display: none;"></div>
+                    <pre id="result-output"></pre>
+                </section>
+
+                <!-- API 调用历史记录 -->
+                <section class="dashboard-section">
+                    <h3>最近调用历史</h3>
+                    <table id="history-table">
+                        <thead>
+                            <tr>
+                                <th>时间</th>
+                                <th>技能</th>
+                                <th>花费</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-body">
+                            <!-- 历史记录将由JS动态填充 -->
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- 充值中心 -->
+                <section class="dashboard-section">
+                    <h3>充值中心</h3>
+                    <p>购买更多技能单元以继续使用服务。</p>
+                    <div id="purchase-options" class="purchase-options">
+                        <button class="purchase-btn" data-amount="1000">购买 1,000 单元</button>
+                        <button class="purchase-btn" data-amount="5000">购买 5,000 单元</button>
+                        <button class="purchase-btn" data-amount="20000">购买 20,000 单元</button>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- 新密钥显示模态框 -->
+        <div id="new-key-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2>请妥善保管您的新API密钥</h2>
+                <p>您的新密钥只会显示这一次。请立即将其复制并存储在安全的地方。</p>
+                <div class="new-key-display">
+                    <pre id="new-key-value"></pre>
+                    <button id="copy-key-btn">复制</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+# Dependencies
+/node_modules
+
+# Prisma
+/prisma/dev.db
+/prisma/dev.db-journal
+
+# Environment variables
+.env
+
+# IDEs and editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Local History for VS Code
+.history/
+
+# Build output
+/dist
+/build
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Other
+.DS_Store
+Thumbs.db
